@@ -1,0 +1,1080 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Integer Mastery: Interactive Learning & Assessment</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+
+        .tab-active {
+            border-bottom: 3px solid #3b82f6;
+            color: #1d4ed8;
+            font-weight: 600;
+        }
+
+        /* Custom Number Line Styling */
+        .number-line-container {
+            position: relative;
+            height: 120px;
+            user-select: none;
+        }
+
+        .tick {
+            position: absolute;
+            bottom: 40px;
+            width: 2px;
+            height: 12px;
+            background-color: #64748b;
+            transform: translateX(-50%);
+        }
+
+        .tick.zero {
+            height: 20px;
+            background-color: #0f172a;
+            width: 3px;
+        }
+
+        .tick-label {
+            position: absolute;
+            bottom: 15px;
+            transform: translateX(-50%);
+            font-size: 0.75rem;
+            color: #475569;
+            font-weight: 500;
+        }
+
+        .tick-label.zero {
+            font-weight: 700;
+            color: #0f172a;
+        }
+
+        .marker {
+            position: absolute;
+            bottom: 46px;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            transform: translate(-50%, 50%);
+            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            z-index: 10;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .animate-fade-in {
+            animation: fadeIn 0.3s ease-out forwards;
+        }
+
+        @media print {
+            .no-print {
+                display: none !important;
+            }
+            body {
+                background-color: white;
+            }
+            .shadow-md, .shadow-lg {
+                box-shadow: none !important;
+                border: 1px solid #e2e8f0;
+            }
+        }
+    </style>
+</head>
+<body class="text-slate-800">
+
+    <!-- Header -->
+    <header class="bg-white shadow-sm sticky top-0 z-50 no-print">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center space-x-3">
+                    <div class="bg-blue-600 text-white p-2 rounded-lg">
+                        <i class="fas fa-calculator text-xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold text-slate-900">Integer Mastery</h1>
+                        <p class="text-xs text-slate-500">Addition & Subtraction Module</p>
+                    </div>
+                </div>
+                
+                <!-- Student Name Input -->
+                <div class="flex items-center space-x-2">
+                    <i class="fas fa-user-graduate text-slate-400"></i>
+                    <input type="text" id="studentNameInput" placeholder="Enter Student Name" 
+                           class="text-sm border border-slate-300 rounded-md px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-blue-500 w-40 sm:w-48"
+                           onchange="updateStudentName(this.value)">
+                </div>
+            </div>
+
+            <!-- Navigation Tabs -->
+            <nav class="flex space-x-8 -mb-px overflow-x-auto">
+                <button onclick="switchTab('learn')" id="tab-learn" class="tab-active whitespace-nowrap py-3 px-1 text-sm font-medium transition-colors flex items-center space-x-2">
+                    <i class="fas fa-book-open"></i>
+                    <span>1. Learn & Explore</span>
+                </button>
+                <button onclick="switchTab('examples')" id="tab-examples" class="text-slate-500 hover:text-slate-700 whitespace-nowrap py-3 px-1 text-sm font-medium transition-colors flex items-center space-x-2">
+                    <i class="fas fa-lightbulb"></i>
+                    <span>2. Interactive Examples</span>
+                </button>
+                <button onclick="switchTab('assessment')" id="tab-assessment" class="text-slate-500 hover:text-slate-700 whitespace-nowrap py-3 px-1 text-sm font-medium transition-colors flex items-center space-x-2">
+                    <i class="fas fa-tasks"></i>
+                    <span>3. Assessment</span>
+                </button>
+                <button onclick="switchTab('report')" id="tab-report" class="text-slate-500 hover:text-slate-700 whitespace-nowrap py-3 px-1 text-sm font-medium transition-colors flex items-center space-x-2">
+                    <i class="fas fa-chart-line"></i>
+                    <span>4. Progress Report</span>
+                    <span id="report-badge" class="hidden bg-blue-100 text-blue-800 text-xs font-semibold px-2 py-0.5 rounded-full">New</span>
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+        <!-- SECTION 1: LEARN & EXPLORE -->
+        <section id="section-learn" class="animate-fade-in space-y-6">
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 sm:p-8">
+                <h2 class="text-2xl font-bold text-slate-900 mb-2">Understanding Integers</h2>
+                <p class="text-slate-600 mb-6">Integers are whole numbers that can be positive, negative, or zero (e.g., ..., -3, -2, -1, 0, 1, 2, 3, ...). Mastering how to add and subtract them is the foundation of algebra!</p>
+
+                <div class="grid md:grid-cols-2 gap-6">
+                    <!-- Addition Rules Card -->
+                    <div class="bg-blue-50/70 border border-blue-200 rounded-xl p-5">
+                        <div class="flex items-center space-x-2 text-blue-800 font-bold text-lg mb-3">
+                            <span class="bg-blue-600 text-white w-7 h-7 rounded-full flex items-center justify-center text-sm">+</span>
+                            <h3>Rules for Addition</h3>
+                        </div>
+                        <ul class="space-y-4 text-sm text-slate-700">
+                            <li class="bg-white p-3.5 rounded-lg border border-blue-100 shadow-sm">
+                                <span class="font-bold text-blue-700 block mb-1">1. Same Signs (Add & Keep)</span>
+                                Add their absolute values and keep the common sign.
+                                <div class="mt-2 font-mono text-xs bg-slate-100 p-2 rounded text-slate-800">
+                                    (+4) + (+3) = +7<br>
+                                    (-4) + (-3) = -7
+                                </div>
+                            </li>
+                            <li class="bg-white p-3.5 rounded-lg border border-blue-100 shadow-sm">
+                                <span class="font-bold text-blue-700 block mb-1">2. Different Signs (Subtract & Keep Larger)</span>
+                                Subtract the smaller absolute value from the larger one, and keep the sign of the number with the larger absolute value.
+                                <div class="mt-2 font-mono text-xs bg-slate-100 p-2 rounded text-slate-800">
+                                    (-8) + (+3) = -5  <span class="text-slate-500">// 8 - 3 = 5, 8 is negative</span><br>
+                                    (+8) + (-3) = +5  <span class="text-slate-500">// 8 - 3 = 5, 8 is positive</span>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Subtraction Rules Card -->
+                    <div class="bg-emerald-50/70 border border-emerald-200 rounded-xl p-5">
+                        <div class="flex items-center space-x-2 text-emerald-800 font-bold text-lg mb-3">
+                            <span class="bg-emerald-600 text-white w-7 h-7 rounded-full flex items-center justify-center text-sm">-</span>
+                            <h3>Rules for Subtraction</h3>
+                        </div>
+                        <div class="bg-white p-4 rounded-lg border border-emerald-100 shadow-sm text-sm text-slate-700 space-y-3">
+                            <div class="text-center py-2 bg-emerald-100/50 rounded-lg font-bold text-emerald-900">
+                                "Keep - Change - Change" (KCC)
+                            </div>
+                            <p>Subtracting an integer is the exact same as adding its opposite! Follow these three steps:</p>
+                            <ol class="list-decimal list-inside space-y-1.5 font-medium text-slate-800">
+                                <li><span class="text-emerald-700 font-bold">Keep</span> the first number the same.</li>
+                                <li><span class="text-emerald-700 font-bold">Change</span> the subtraction sign to addition.</li>
+                                <li><span class="text-emerald-700 font-bold">Change</span> the sign of the second number to its opposite.</li>
+                            </ol>
+                            <div class="mt-2 font-mono text-xs bg-slate-100 p-2.5 rounded text-slate-800 space-y-1">
+                                <div>5 - (-3) &rarr; 5 + (+3) = 8</div>
+                                <div>-4 - 6 &rarr; -4 + (-6) = -10</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Interactive Number Line Visualizer -->
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 sm:p-8">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-4 gap-4">
+                    <div>
+                        <h3 class="text-lg font-bold text-slate-900">Interactive Number Line Simulator</h3>
+                        <p class="text-sm text-slate-500">Test any equation from -10 to 10 to see how movement works on a number line.</p>
+                    </div>
+                    
+                    <!-- Controls -->
+                    <div class="flex flex-wrap items-center gap-2 bg-slate-100 p-2 rounded-lg">
+                        <input type="number" id="sim-num1" value="-3" min="-10" max="10" class="w-16 text-center font-bold border border-slate-300 rounded py-1 text-slate-800">
+                        <select id="sim-op" class="font-bold border border-slate-300 rounded py-1 px-2 text-blue-600 bg-white">
+                            <option value="+">+</option>
+                            <option value="-">-</option>
+                        </select>
+                        <input type="number" id="sim-num2" value="5" min="-10" max="10" class="w-16 text-center font-bold border border-slate-300 rounded py-1 text-slate-800">
+                        <button onclick="runNumberLine()" class="bg-blue-600 hover:bg-blue-700 text-white font-medium px-4 py-1 rounded transition-colors text-sm">
+                            Visualize
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Explanation Box -->
+                <div id="sim-explanation" class="bg-indigo-50 border border-indigo-100 text-indigo-900 px-4 py-3 rounded-lg text-sm mb-4 font-medium">
+                    Start at <strong>-3</strong>. Adding <strong>5</strong> means moving <strong>5 units to the right</strong>, landing on <strong>2</strong>.
+                </div>
+
+                <!-- Number Line Graphic -->
+                <div class="overflow-x-auto pb-2">
+                    <div class="min-w-[600px] px-6">
+                        <div id="number-line" class="number-line-container border-b-2 border-slate-400">
+                            <!-- Ticks generated by JS -->
+                            <div id="nl-start-marker" class="marker bg-slate-400 ring-4 ring-slate-200" title="Start"></div>
+                            <div id="nl-end-marker" class="marker bg-blue-600 ring-4 ring-blue-200" title="Result"></div>
+                            <svg id="nl-arc-svg" class="absolute inset-0 w-full h-full pointer-events-none"></svg>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex justify-center space-x-6 text-xs text-slate-500 mt-2">
+                    <span class="flex items-center"><span class="w-3 h-3 rounded-full bg-slate-400 inline-block mr-1.5"></span> Starting Value</span>
+                    <span class="flex items-center"><span class="w-3 h-3 rounded-full bg-blue-600 inline-block mr-1.5"></span> Final Answer</span>
+                </div>
+            </div>
+
+            <div class="flex justify-end">
+                <button onclick="switchTab('examples')" class="bg-blue-600 hover:bg-blue-700 text-white font-medium px-6 py-2.5 rounded-lg shadow-sm transition-colors flex items-center space-x-2">
+                    <span>Next: Guided Examples</span>
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+        </section>
+
+        <!-- SECTION 2: INTERACTIVE EXAMPLES -->
+        <section id="section-examples" class="hidden animate-fade-in space-y-6">
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 sm:p-8">
+                <div class="flex justify-between items-center mb-6">
+                    <div>
+                        <h2 class="text-2xl font-bold text-slate-900">Step-by-Step Guided Examples</h2>
+                        <p class="text-slate-600 text-sm">Click "Reveal Next Step" on each problem to trace the thinking process.</p>
+                    </div>
+                    <button onclick="resetExamples()" class="text-sm text-slate-500 hover:text-slate-800 underline">Reset All</button>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-6" id="examples-container">
+                    <!-- Populated via JS -->
+                </div>
+            </div>
+
+            <div class="flex justify-between">
+                <button onclick="switchTab('learn')" class="text-slate-600 hover:text-slate-900 font-medium px-4 py-2 rounded-lg transition-colors flex items-center space-x-2">
+                    <i class="fas fa-arrow-left"></i>
+                    <span>Back to Lesson</span>
+                </button>
+                <button onclick="switchTab('assessment')" class="bg-blue-600 hover:bg-blue-700 text-white font-medium px-6 py-2.5 rounded-lg shadow-sm transition-colors flex items-center space-x-2">
+                    <span>Start Assessment</span>
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+        </section>
+
+        <!-- SECTION 3: ASSESSMENT -->
+        <section id="section-assessment" class="hidden animate-fade-in space-y-6">
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 sm:p-8">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-200 pb-4 mb-6 gap-4">
+                    <div>
+                        <h2 class="text-2xl font-bold text-slate-900">Mastery Assessment</h2>
+                        <p class="text-slate-600 text-sm">Complete all 10 questions to generate your personalized progress monitoring report.</p>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <span id="quiz-progress-text" class="text-sm font-semibold text-blue-600 bg-blue-50 px-3 py-1 rounded-full">0 / 10 Answered</span>
+                        <span id="quiz-difficulty-badge" class="text-xs font-bold uppercase tracking-wider bg-indigo-100 text-indigo-800 px-2.5 py-1 rounded-full">Standard Level</span>
+                        <button onclick="generateNewQuiz()" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium px-3 py-1.5 rounded-md transition-colors" title="Generate new numbers">
+                            <i class="fas fa-sync-alt mr-1"></i> New Questions
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Adaptive Focus Banner -->
+                <div id="adaptive-banner" class="hidden mb-6 bg-indigo-50 border border-indigo-200 rounded-xl p-4 flex items-start space-x-3">
+                    <i class="fas fa-brain text-indigo-600 mt-0.5 text-lg"></i>
+                    <div class="text-sm text-indigo-900">
+                        <span class="font-bold block">Adaptive Mode Active</span>
+                        <span id="adaptive-banner-text">Questions have been tailored based on your previous performance.</span>
+                    </div>
+                </div>
+
+                <form id="quiz-form" onsubmit="submitAssessment(event)" class="space-y-6">
+                    <div id="questions-list" class="space-y-4">
+                        <!-- Questions generated dynamically -->
+                    </div>
+
+                    <div id="quiz-error" class="hidden bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
+                        Please answer all 10 questions before submitting!
+                    </div>
+
+                    <div class="pt-4 border-t border-slate-200 flex justify-end space-x-4">
+                        <button type="submit" id="submit-quiz-btn" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-8 py-3 rounded-lg shadow-md transition-all transform hover:-translate-y-0.5 flex items-center space-x-2">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Submit & View Progress Report</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <!-- SECTION 4: MONITORING REPORT -->
+        <section id="section-report" class="hidden animate-fade-in space-y-6">
+            
+            <!-- Empty State if no assessment taken yet -->
+            <div id="report-empty" class="bg-white rounded-xl shadow-sm border border-slate-200 p-12 text-center">
+                <div class="w-16 h-16 bg-slate-100 text-slate-400 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">
+                    <i class="fas fa-clipboard-list"></i>
+                </div>
+                <h3 class="text-xl font-bold text-slate-800 mb-2">No Assessment Data Yet</h3>
+                <p class="text-slate-500 max-w-md mx-auto mb-6">Complete the Mastery Assessment first to generate your diagnostic breakdown, skill mastery levels, and attempt history.</p>
+                <button onclick="switchTab('assessment')" class="bg-blue-600 hover:bg-blue-700 text-white font-medium px-6 py-2.5 rounded-lg transition-colors">
+                    Go to Assessment
+                </button>
+            </div>
+
+            <!-- Actual Report Content -->
+            <div id="report-content" class="hidden space-y-6">
+                <!-- Report Header Card -->
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 sm:p-8">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-slate-200 pb-6 mb-6 gap-4">
+                        <div>
+                            <div class="flex items-center space-x-2 text-xs font-bold uppercase tracking-wider text-blue-600 mb-1">
+                                <span>Official Student Diagnostic</span>
+                            </div>
+                            <h2 class="text-2xl font-bold text-slate-900">Progress Monitoring Report</h2>
+                            <p class="text-sm text-slate-500 mt-1">
+                                Student: <strong id="rep-student-name" class="text-slate-800">Guest Student</strong> &bull; 
+                                Date: <span id="rep-date"></span>
+                            </p>
+                        </div>
+                        <div class="flex space-x-2 no-print">
+                            <button onclick="window.print()" class="bg-slate-800 hover:bg-slate-900 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors flex items-center space-x-2">
+                                <i class="fas fa-print"></i>
+                                <span>Print / Save PDF</span>
+                            </button>
+                            <button onclick="retakeQuiz()" class="bg-blue-50 hover:bg-blue-100 text-blue-700 text-sm font-medium px-4 py-2 rounded-lg transition-colors">
+                                Retake Assessment
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Top KPI Metrics -->
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+                        <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                            <span class="text-xs text-slate-500 font-medium block">Latest Score</span>
+                            <div class="flex items-baseline space-x-2 mt-1">
+                                <span id="rep-score" class="text-3xl font-bold text-slate-900">0%</span>
+                                <span id="rep-fraction" class="text-sm text-slate-500">(0/10)</span>
+                            </div>
+                        </div>
+                        <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                            <span class="text-xs text-slate-500 font-medium block">Proficiency Status</span>
+                            <div class="mt-2">
+                                <span id="rep-status-badge" class="px-2.5 py-1 rounded-full text-xs font-bold">Pending</span>
+                            </div>
+                        </div>
+                        <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                            <span class="text-xs text-slate-500 font-medium block">Total Attempts</span>
+                            <span id="rep-attempts-count" class="text-3xl font-bold text-slate-900 mt-1 block">1</span>
+                        </div>
+                        <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                            <span class="text-xs text-slate-500 font-medium block">Growth Trend</span>
+                            <span id="rep-trend" class="text-sm font-bold text-slate-700 mt-2 block">Baseline Established</span>
+                        </div>
+                    </div>
+
+                    <!-- Skill Breakdown Bars -->
+                    <h3 class="text-lg font-bold text-slate-900 mb-4">Competency Breakdown by Skill Area</h3>
+                    <div class="space-y-4 mb-8" id="rep-skills-container">
+                        <!-- Skill bars injected here -->
+                    </div>
+
+                    <!-- Personalized Recommendations -->
+                    <div class="bg-amber-50 border border-amber-200 rounded-xl p-5">
+                        <h4 class="font-bold text-amber-900 flex items-center space-x-2 mb-2">
+                            <i class="fas fa-lightbulb text-amber-600"></i>
+                            <span>Targeted Action Plan & Feedback</span>
+                        </h4>
+                        <p id="rep-recommendation" class="text-sm text-amber-800 leading-relaxed"></p>
+                    </div>
+                </div>
+
+                <!-- Itemized Question Review -->
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 sm:p-8">
+                    <h3 class="text-lg font-bold text-slate-900 mb-4">Latest Attempt Item Analysis</h3>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="border-b border-slate-200 text-xs font-semibold text-slate-500 uppercase">
+                                    <th class="py-3 px-4">#</th>
+                                    <th class="py-3 px-4">Skill Category</th>
+                                    <th class="py-3 px-4">Problem</th>
+                                    <th class="py-3 px-4">Your Answer</th>
+                                    <th class="py-3 px-4">Correct Answer</th>
+                                    <th class="py-3 px-4">Result</th>
+                                </tr>
+                            </thead>
+                            <tbody id="rep-item-table" class="divide-y divide-slate-100 text-sm">
+                                <!-- Rows injected via JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Attempt History Log -->
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 sm:p-8">
+                    <div class="flex flex-wrap justify-between items-center mb-4 gap-2">
+                        <h3 class="text-lg font-bold text-slate-900">Assessment Attempt History</h3>
+                        <div id="clear-history-controls" class="no-print">
+                            <button onclick="promptClearHistory()" id="btn-clear-prompt" class="text-xs text-red-600 hover:underline font-medium">Clear History</button>
+                            <div id="clear-confirm-box" class="hidden flex items-center space-x-2 bg-red-50 border border-red-200 px-3 py-1 rounded-lg">
+                                <span class="text-xs text-red-800 font-medium">Erase all records?</span>
+                                <button onclick="confirmClearHistory()" class="text-xs bg-red-600 hover:bg-red-700 text-white px-2 py-0.5 rounded font-semibold">Yes, Clear</button>
+                                <button onclick="cancelClearHistory()" class="text-xs text-slate-600 hover:text-slate-900 px-2 py-0.5">Cancel</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="border-b border-slate-200 text-xs font-semibold text-slate-500 uppercase">
+                                    <th class="py-2.5 px-4">Attempt</th>
+                                    <th class="py-2.5 px-4">Date & Time</th>
+                                    <th class="py-2.5 px-4">Add (Same)</th>
+                                    <th class="py-2.5 px-4">Add (Diff)</th>
+                                    <th class="py-2.5 px-4">Sub (Pos)</th>
+                                    <th class="py-2.5 px-4">Sub (Neg)</th>
+                                    <th class="py-2.5 px-4">Overall Score</th>
+                                </tr>
+                            </thead>
+                            <tbody id="rep-history-table" class="divide-y divide-slate-100 text-sm">
+                                <!-- History rows injected via JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        // --- STATE MANAGEMENT ---
+        let studentName = localStorage.getItem('int_student_name') || '';
+        let attemptHistory = JSON.parse(localStorage.getItem('int_attempt_history')) || [];
+        let currentQuestions = [];
+
+        // --- INITIALIZATION ---
+        document.addEventListener('DOMContentLoaded', () => {
+            if (studentName) {
+                document.getElementById('studentNameInput').value = studentName;
+            }
+            initNumberLine();
+            runNumberLine();
+            renderExamples();
+            generateNewQuiz();
+            if (attemptHistory.length > 0) {
+                renderReport();
+            }
+            window.addEventListener('resize', runNumberLine);
+        });
+
+        function updateStudentName(name) {
+            studentName = name.trim();
+            localStorage.setItem('int_student_name', studentName);
+            if (attemptHistory.length > 0) {
+                document.getElementById('rep-student-name').textContent = studentName || 'Guest Student';
+            }
+        }
+
+        // --- NAVIGATION ---
+        function switchTab(tabId) {
+            const sections = ['learn', 'examples', 'assessment', 'report'];
+            sections.forEach(s => {
+                document.getElementById(`section-${s}`).classList.add('hidden');
+                const btn = document.getElementById(`tab-${s}`);
+                btn.classList.remove('tab-active');
+                btn.classList.add('text-slate-500');
+            });
+
+            document.getElementById(`section-${tabId}`).classList.remove('hidden');
+            const activeBtn = document.getElementById(`tab-${tabId}`);
+            activeBtn.classList.add('tab-active');
+            activeBtn.classList.remove('text-slate-500');
+
+            if (tabId === 'report') {
+                document.getElementById('report-badge').classList.add('hidden');
+            }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // --- NUMBER LINE VISUALIZER ---
+        function initNumberLine() {
+            const container = document.getElementById('number-line');
+            const min = -15;
+            const max = 15;
+            const range = max - min;
+
+            for (let i = min; i <= max; i++) {
+                const percent = ((i - min) / range) * 100;
+                
+                const tick = document.createElement('div');
+                tick.className = `tick ${i === 0 ? 'zero' : ''}`;
+                tick.style.left = `${percent}%`;
+                container.appendChild(tick);
+
+                const label = document.createElement('div');
+                label.className = `tick-label ${i === 0 ? 'zero' : ''}`;
+                label.style.left = `${percent}%`;
+                label.textContent = i;
+                container.appendChild(label);
+            }
+        }
+
+        function runNumberLine() {
+            let n1 = parseInt(document.getElementById('sim-num1').value) || 0;
+            const op = document.getElementById('sim-op').value;
+            let n2 = parseInt(document.getElementById('sim-num2').value) || 0;
+
+            // Clamp values so result stays within -15 to 15
+            n1 = Math.max(-10, Math.min(10, n1));
+            n2 = Math.max(-10, Math.min(10, n2));
+            document.getElementById('sim-num1').value = n1;
+            document.getElementById('sim-num2').value = n2;
+
+            const result = op === '+' ? n1 + n2 : n1 - n2;
+            const clampedResult = Math.max(-15, Math.min(15, result));
+
+            const min = -15, max = 15, range = 30;
+            const startPct = ((n1 - min) / range) * 100;
+            const endPct = ((clampedResult - min) / range) * 100;
+
+            const startMarker = document.getElementById('nl-start-marker');
+            const endMarker = document.getElementById('nl-end-marker');
+            startMarker.style.left = `${startPct}%`;
+            endMarker.style.left = `${endPct}%`;
+
+            // Draw SVG curved arrow
+            const svg = document.getElementById('nl-arc-svg');
+            const width = svg.clientWidth || 600;
+            const x1 = (startPct / 100) * width;
+            const x2 = (endPct / 100) * width;
+            const y = 74; // aligns with marker center
+
+            if (x1 === x2) {
+                svg.innerHTML = '';
+            } else {
+                const midX = (x1 + x2) / 2;
+                const arcHeight = Math.min(45, Math.abs(x2 - x1) * 0.35 + 15);
+                const ctrlY = y - arcHeight;
+                const color = x2 > x1 ? '#2563eb' : '#e11d48';
+
+                svg.innerHTML = `
+                    <defs>
+                        <marker id="arrowhead" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+                            <polygon points="0 0, 8 3, 0 6" fill="${color}" />
+                        </marker>
+                    </defs>
+                    <path d="M ${x1} ${y} Q ${midX} ${ctrlY} ${x2} ${y}" 
+                          fill="none" stroke="${color}" stroke-width="2.5" stroke-dasharray="4,2"
+                          marker-end="url(#arrowhead)" />
+                `;
+            }
+
+            // Update Text Explanation
+            const expBox = document.getElementById('sim-explanation');
+            let explanation = `Start at <strong>${n1}</strong>. `;
+            if (op === '+') {
+                if (n2 >= 0) {
+                    explanation += `Adding <strong>${n2}</strong> moves <strong>${n2} units right</strong>, landing on <strong>${result}</strong>.`;
+                } else {
+                    explanation += `Adding <strong>(${n2})</strong> moves <strong>${Math.abs(n2)} units left</strong>, landing on <strong>${result}</strong>.`;
+                }
+            } else {
+                if (n2 >= 0) {
+                    explanation += `Subtracting <strong>${n2}</strong> moves <strong>${n2} units left</strong>, landing on <strong>${result}</strong>.`;
+                } else {
+                    explanation += `Subtracting <strong>(${n2})</strong> is the same as adding <strong>+${Math.abs(n2)}</strong> (moving <strong>${Math.abs(n2)} units right</strong>), landing on <strong>${result}</strong>.`;
+                }
+            }
+            expBox.innerHTML = explanation;
+        }
+
+        // --- GUIDED EXAMPLES ---
+        const guidedExamplesData = [
+            {
+                title: "Example 1: Adding Negative Integers",
+                problem: "(-7) + (-5)",
+                rule: "Addition: Same Signs",
+                steps: [
+                    "Identify the signs: Both numbers are negative (-7 and -5).",
+                    "Add their absolute values: 7 + 5 = 12.",
+                    "Keep the common negative sign: Final Answer = -12."
+                ]
+            },
+            {
+                title: "Example 2: Adding Different Signs",
+                problem: "(-12) + 8",
+                rule: "Addition: Different Signs",
+                steps: [
+                    "Identify the signs: -12 is negative, +8 is positive.",
+                    "Subtract the smaller absolute value from the larger: 12 - 8 = 4.",
+                    "Keep the sign of the larger absolute value (12 is negative): Final Answer = -4."
+                ]
+            },
+            {
+                title: "Example 3: Subtracting a Positive from a Negative",
+                problem: "(-6) - 9",
+                rule: "Subtraction: Keep-Change-Change",
+                steps: [
+                    "Apply Keep-Change-Change: Keep (-6), Change (-) to (+), Change (9) to (-9).",
+                    "New equation: (-6) + (-9).",
+                    "Same signs: Add 6 + 9 = 15 and keep negative sign: Final Answer = -15."
+                ]
+            },
+            {
+                title: "Example 4: Subtracting a Negative Integer",
+                problem: "4 - (-11)",
+                rule: "Subtraction: Double Negative",
+                steps: [
+                    "Apply Keep-Change-Change: Keep (4), Change (-) to (+), Change (-11) to (+11).",
+                    "New equation: 4 + 11.",
+                    "Add the positive numbers: Final Answer = 15."
+                ]
+            }
+        ];
+
+        function renderExamples() {
+            const container = document.getElementById('examples-container');
+            container.innerHTML = guidedExamplesData.map((ex, idx) => `
+                <div class="border border-slate-200 rounded-xl p-5 bg-slate-50/50 flex flex-col justify-between">
+                    <div>
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-xs font-bold uppercase tracking-wider text-blue-600">${ex.rule}</span>
+                        </div>
+                        <h3 class="font-bold text-slate-800 mb-3">${ex.title}</h3>
+                        <div class="bg-white border border-slate-200 rounded-lg py-3 px-4 text-center font-mono text-xl font-bold text-slate-900 mb-4 shadow-sm">
+                            ${ex.problem}
+                        </div>
+                        <div id="ex-steps-${idx}" class="space-y-2 mb-4">
+                            ${ex.steps.map((step, sIdx) => `
+                                <div id="ex-${idx}-step-${sIdx}" class="hidden text-sm bg-white p-2.5 rounded border-l-4 border-blue-500 text-slate-700 shadow-sm animate-fade-in">
+                                    <span class="font-bold text-blue-600 mr-1">Step ${sIdx + 1}:</span> ${step}
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                    <button onclick="revealNextStep(${idx}, ${ex.steps.length})" id="ex-btn-${idx}" 
+                            class="w-full py-2 bg-white hover:bg-blue-50 text-blue-600 border border-blue-200 font-medium rounded-lg text-sm transition-colors">
+                        Reveal Step 1
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        function revealNextStep(exIdx, totalSteps) {
+            for (let i = 0; i < totalSteps; i++) {
+                const el = document.getElementById(`ex-${exIdx}-step-${i}`);
+                if (el.classList.contains('hidden')) {
+                    el.classList.remove('hidden');
+                    const btn = document.getElementById(`ex-btn-${exIdx}`);
+                    if (i + 1 < totalSteps) {
+                        btn.textContent = `Reveal Step ${i + 2}`;
+                    } else {
+                        btn.textContent = `All Steps Revealed ✓`;
+                        btn.disabled = true;
+                        btn.classList.add('opacity-60', 'cursor-default');
+                    }
+                    break;
+                }
+            }
+        }
+
+        function resetExamples() {
+            renderExamples();
+        }
+
+        // --- ASSESSMENT GENERATOR ---
+        function randInt(min, max) {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+
+        function formatNum(n) {
+            return n < 0 ? `(${n})` : `${n}`;
+        }
+
+        function generateNewQuiz() {
+            currentQuestions = [];
+            
+            // Adaptive Logic: Determine difficulty tier and targeted skill weights from history
+            let difficulty = 'standard'; // 'foundational', 'standard', 'challenge'
+            let distribution = { addSame: 2, addDiff: 3, subPos: 2, subNeg: 3 };
+            const banner = document.getElementById('adaptive-banner');
+            const bannerText = document.getElementById('adaptive-banner-text');
+            const diffBadge = document.getElementById('quiz-difficulty-badge');
+
+            if (attemptHistory.length > 0) {
+                const latest = attemptHistory[attemptHistory.length - 1];
+                banner.classList.remove('hidden');
+
+                if (latest.percentage >= 85) {
+                    difficulty = 'challenge';
+                    diffBadge.textContent = 'Challenge Level';
+                    diffBadge.className = 'text-xs font-bold uppercase tracking-wider bg-purple-100 text-purple-800 px-2.5 py-1 rounded-full';
+                    bannerText.textContent = `Great job scoring ${latest.percentage}%! Numbers have been scaled up to challenge your mastery.`;
+                } else if (latest.percentage < 60) {
+                    difficulty = 'foundational';
+                    diffBadge.textContent = 'Foundational Level';
+                    diffBadge.className = 'text-xs font-bold uppercase tracking-wider bg-teal-100 text-teal-800 px-2.5 py-1 rounded-full';
+                    bannerText.textContent = `Using smaller numbers to reinforce core sign rules after your ${latest.percentage}% score.`;
+                } else {
+                    difficulty = 'standard';
+                    diffBadge.textContent = 'Standard Level';
+                    diffBadge.className = 'text-xs font-bold uppercase tracking-wider bg-indigo-100 text-indigo-800 px-2.5 py-1 rounded-full';
+                }
+
+                // Shift question allocation toward weakest skill if under 80%
+                const skillsArr = [
+                    { key: 'addSame', label: 'Addition (Same Signs)', pct: latest.skills.addSame.pct },
+                    { key: 'addDiff', label: 'Addition (Different Signs)', pct: latest.skills.addDiff.pct },
+                    { key: 'subPos', label: 'Subtraction (Positive)', pct: latest.skills.subPos.pct },
+                    { key: 'subNeg', label: 'Subtraction (Negative)', pct: latest.skills.subNeg.pct }
+                ].sort((a, b) => a.pct - b.pct);
+
+                if (skillsArr[0].pct < 80) {
+                    distribution = { addSame: 2, addDiff: 2, subPos: 2, subNeg: 2 };
+                    distribution[skillsArr[0].key] += 2; // Extra practice on weakest skill
+                    if (difficulty === 'standard') {
+                        bannerText.textContent = `Focusing extra questions on "${skillsArr[0].label}" (${skillsArr[0].pct}% accuracy last attempt).`;
+                    }
+                }
+            } else {
+                banner.classList.add('hidden');
+                diffBadge.textContent = 'Standard Level';
+            }
+
+            const maxRange = difficulty === 'foundational' ? 10 : (difficulty === 'challenge' ? 35 : 18);
+            const minRange = difficulty === 'challenge' ? 8 : 2;
+            
+            // Skill 1: Addition - Same Signs
+            for (let i = 0; i < distribution.addSame; i++) {
+                const a = -randInt(minRange, maxRange);
+                const b = -randInt(minRange, maxRange);
+                currentQuestions.push({
+                    id: currentQuestions.length + 1,
+                    category: "Addition (Same Signs)",
+                    skillKey: "addSame",
+                    text: `${a} + ${formatNum(b)}`,
+                    answer: a + b
+                });
+            }
+
+            // Skill 2: Addition - Different Signs
+            for (let i = 0; i < distribution.addDiff; i++) {
+                const a = randInt(minRange, maxRange) * (i % 2 === 0 ? -1 : 1);
+                let b = randInt(minRange, maxRange) * (i % 2 === 0 ? 1 : -1);
+                if (a + b === 0) b += 2;
+                currentQuestions.push({
+                    id: currentQuestions.length + 1,
+                    category: "Addition (Different Signs)",
+                    skillKey: "addDiff",
+                    text: `${a} + ${formatNum(b)}`,
+                    answer: a + b
+                });
+            }
+
+            // Skill 3: Subtraction - Positive Subtrahend
+            for (let i = 0; i < distribution.subPos; i++) {
+                const a = i % 2 === 0 ? -randInt(minRange, maxRange) : randInt(2, Math.floor(maxRange * 0.7));
+                const b = randInt(minRange + 2, maxRange);
+                currentQuestions.push({
+                    id: currentQuestions.length + 1,
+                    category: "Subtraction (Positive Integer)",
+                    skillKey: "subPos",
+                    text: `${a} - ${b}`,
+                    answer: a - b
+                });
+            }
+
+            // Skill 4: Subtraction - Negative Subtrahend
+            for (let i = 0; i < distribution.subNeg; i++) {
+                const a = randInt(-maxRange, maxRange);
+                const b = -randInt(minRange, maxRange);
+                currentQuestions.push({
+                    id: currentQuestions.length + 1,
+                    category: "Subtraction (Negative Integer)",
+                    skillKey: "subNeg",
+                    text: `${a} - ${formatNum(b)}`,
+                    answer: a - b
+                });
+            }
+
+            renderQuizForm();
+        }
+
+        function renderQuizForm() {
+            const list = document.getElementById('questions-list');
+            document.getElementById('quiz-error').classList.add('hidden');
+            document.getElementById('quiz-progress-text').textContent = `0 / ${currentQuestions.length} Answered`;
+
+            list.innerHTML = currentQuestions.map((q, idx) => {
+                // Generate 3 plausible distractors
+                const choices = new Set([q.answer]);
+                while (choices.size < 4) {
+                    const offset = randInt(-5, 5);
+                    const signFlip = -q.answer;
+                    const candidates = [q.answer + offset, signFlip, signFlip + offset];
+                    const pick = candidates[randInt(0, candidates.length - 1)];
+                    if (pick !== q.answer) choices.add(pick);
+                }
+                const shuffledChoices = Array.from(choices).sort(() => Math.random() - 0.5);
+
+                return `
+                    <div class="p-4 sm:p-5 border border-slate-200 rounded-xl bg-slate-50/40 hover:border-blue-300 transition-colors">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                            <div>
+                                <span class="text-xs font-semibold text-slate-400 uppercase">Question ${idx + 1} &bull; ${q.category}</span>
+                                <div class="text-xl font-mono font-bold text-slate-900 mt-1">${q.text} = ?</div>
+                            </div>
+                            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:w-auto w-full">
+                                ${shuffledChoices.map(choice => `
+                                    <label class="cursor-pointer">
+                                        <input type="radio" name="q_${q.id}" value="${choice}" class="peer sr-only" onchange="updateQuizProgress()">
+                                        <div class="text-center font-mono font-bold py-2.5 px-4 rounded-lg border border-slate-300 bg-white text-slate-700 
+                                                    peer-checked:bg-blue-600 peer-checked:text-white peer-checked:border-blue-600 
+                                                    hover:bg-slate-100 transition-all">
+                                            ${choice}
+                                        </div>
+                                    </label>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function updateQuizProgress() {
+            let answered = 0;
+            currentQuestions.forEach(q => {
+                if (document.querySelector(`input[name="q_${q.id}"]:checked`)) {
+                    answered++;
+                }
+            });
+            document.getElementById('quiz-progress-text').textContent = `${answered} / ${currentQuestions.length} Answered`;
+            if (answered === currentQuestions.length) {
+                document.getElementById('quiz-error').classList.add('hidden');
+            }
+        }
+
+        function submitAssessment(e) {
+            e.preventDefault();
+            
+            const results = [];
+            let allAnswered = true;
+
+            currentQuestions.forEach(q => {
+                const selected = document.querySelector(`input[name="q_${q.id}"]:checked`);
+                if (!selected) {
+                    allAnswered = false;
+                } else {
+                    const userVal = parseInt(selected.value);
+                    results.push({
+                        ...q,
+                        userAnswer: userVal,
+                        isCorrect: userVal === q.answer
+                    });
+                }
+            });
+
+            if (!allAnswered) {
+                document.getElementById('quiz-error').classList.remove('hidden');
+                return;
+            }
+
+            // Calculate Scores
+            const totalCorrect = results.filter(r => r.isCorrect).length;
+            const percentage = Math.round((totalCorrect / currentQuestions.length) * 100);
+
+            const calcSkill = (key) => {
+                const items = results.filter(r => r.skillKey === key);
+                const correct = items.filter(r => r.isCorrect).length;
+                return { correct, total: items.length, pct: Math.round((correct / items.length) * 100) };
+            };
+
+            const attemptRecord = {
+                attemptNum: attemptHistory.length + 1,
+                timestamp: new Date().toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' }),
+                score: totalCorrect,
+                total: currentQuestions.length,
+                percentage: percentage,
+                skills: {
+                    addSame: calcSkill('addSame'),
+                    addDiff: calcSkill('addDiff'),
+                    subPos: calcSkill('subPos'),
+                    subNeg: calcSkill('subNeg')
+                },
+                items: results
+            };
+
+            attemptHistory.push(attemptRecord);
+            localStorage.setItem('int_attempt_history', JSON.stringify(attemptHistory));
+
+            renderReport();
+            document.getElementById('report-badge').classList.remove('hidden');
+            switchTab('report');
+        }
+
+        function retakeQuiz() {
+            generateNewQuiz();
+            switchTab('assessment');
+        }
+
+        // --- PROGRESS MONITORING REPORT ---
+        function renderReport() {
+            if (attemptHistory.length === 0) {
+                document.getElementById('report-empty').classList.remove('hidden');
+                document.getElementById('report-content').classList.add('hidden');
+                return;
+            }
+
+            document.getElementById('report-empty').classList.add('hidden');
+            document.getElementById('report-content').classList.remove('hidden');
+
+            const latest = attemptHistory[attemptHistory.length - 1];
+            
+            // Header Info
+            document.getElementById('rep-student-name').textContent = studentName || 'Guest Student';
+            document.getElementById('rep-date').textContent = latest.timestamp;
+
+            // KPIs
+            document.getElementById('rep-score').textContent = `${latest.percentage}%`;
+            document.getElementById('rep-fraction').textContent = `(${latest.score}/${latest.total})`;
+            document.getElementById('rep-attempts-count').textContent = attemptHistory.length;
+
+            // Status Badge
+            const badge = document.getElementById('rep-status-badge');
+            if (latest.percentage >= 80) {
+                badge.textContent = "Mastery Achieved";
+                badge.className = "px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800";
+            } else if (latest.percentage >= 60) {
+                badge.textContent = "Approaching Mastery";
+                badge.className = "px-2.5 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-800";
+            } else {
+                badge.textContent = "Needs Intervention";
+                badge.className = "px-2.5 py-1 rounded-full text-xs font-bold bg-red-100 text-red-800";
+            }
+
+            // Growth Trend
+            const trendEl = document.getElementById('rep-trend');
+            if (attemptHistory.length === 1) {
+                trendEl.innerHTML = `<span class="text-slate-600">Baseline Established</span>`;
+            } else {
+                const prev = attemptHistory[attemptHistory.length - 2];
+                const diff = latest.percentage - prev.percentage;
+                if (diff > 0) {
+                    trendEl.innerHTML = `<span class="text-emerald-600"><i class="fas fa-arrow-up mr-1"></i>+${diff}% from last attempt</span>`;
+                } else if (diff < 0) {
+                    trendEl.innerHTML = `<span class="text-red-600"><i class="fas fa-arrow-down mr-1"></i>${diff}% from last attempt</span>`;
+                } else {
+                    trendEl.innerHTML = `<span class="text-slate-600">Consistent (${latest.percentage}%)</span>`;
+                }
+            }
+
+            // Skill Bars
+            const skillMeta = [
+                { key: 'addSame', label: 'Addition: Same Signs (e.g., -4 + -5)', tip: 'Remember to add the numbers and keep the common sign.' },
+                { key: 'addDiff', label: 'Addition: Different Signs (e.g., -8 + 3)', tip: 'Subtract the smaller absolute value from the larger, and keep the sign of the larger number.' },
+                { key: 'subPos', label: 'Subtraction: Positive Subtrahend (e.g., -5 - 6)', tip: 'Use Keep-Change-Change: subtracting a positive is the same as adding a negative.' },
+                { key: 'subNeg', label: 'Subtraction: Negative Subtrahend (e.g., 4 - (-7))', tip: 'Watch out for double negatives! Subtracting a negative turns into addition.' }
+            ];
+
+            const skillsContainer = document.getElementById('rep-skills-container');
+            let weakAreas = [];
+
+            skillsContainer.innerHTML = skillMeta.map(meta => {
+                const s = latest.skills[meta.key];
+                if (s.pct < 80) weakAreas.push(meta);
+                const barColor = s.pct >= 80 ? 'bg-emerald-500' : (s.pct >= 50 ? 'bg-amber-500' : 'bg-red-500');
+                
+                return `
+                    <div>
+                        <div class="flex justify-between text-sm font-medium mb-1">
+                            <span class="text-slate-700">${meta.label}</span>
+                            <span class="font-bold text-slate-900">${s.correct}/${s.total} (${s.pct}%)</span>
+                        </div>
+                        <div class="w-full bg-slate-200 rounded-full h-2.5">
+                            <div class="${barColor} h-2.5 rounded-full transition-all duration-500" style="width: ${s.pct}%"></div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            // Personalized Recommendation
+            const recEl = document.getElementById('rep-recommendation');
+            if (weakAreas.length === 0) {
+                recEl.innerHTML = `<strong>Outstanding work!</strong> You have demonstrated strong mastery across all integer addition and subtraction rules. You are ready to advance to multiplication and division of integers.`;
+            } else {
+                const tipsList = weakAreas.map(w => `<li><strong>${w.label.split(' (')[0]}:</strong> ${w.tip}</li>`).join('');
+                recEl.innerHTML = `Focus your next practice session on the following areas where accuracy fell below 80%:<ul class="list-disc list-inside mt-2 space-y-1">${tipsList}</ul>`;
+            }
+
+            // Item Analysis Table
+            const itemTable = document.getElementById('rep-item-table');
+            itemTable.innerHTML = latest.items.map((item, idx) => `
+                <tr class="${item.isCorrect ? 'bg-white' : 'bg-red-50/40'}">
+                    <td class="py-3 px-4 font-medium text-slate-500">${idx + 1}</td>
+                    <td class="py-3 px-4 text-slate-700">${item.category}</td>
+                    <td class="py-3 px-4 font-mono font-bold text-slate-900">${item.text}</td>
+                    <td class="py-3 px-4 font-mono font-bold ${item.isCorrect ? 'text-emerald-600' : 'text-red-600'}">${item.userAnswer}</td>
+                    <td class="py-3 px-4 font-mono font-bold text-slate-800">${item.answer}</td>
+                    <td class="py-3 px-4">
+                        ${item.isCorrect 
+                            ? '<span class="inline-flex items-center text-xs font-semibold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded"><i class="fas fa-check mr-1"></i>Correct</span>' 
+                            : '<span class="inline-flex items-center text-xs font-semibold text-red-700 bg-red-100 px-2 py-0.5 rounded"><i class="fas fa-times mr-1"></i>Incorrect</span>'}
+                    </td>
+                </tr>
+            `).join('');
+
+            // History Table
+            const historyTable = document.getElementById('rep-history-table');
+            historyTable.innerHTML = attemptHistory.slice().reverse().map(att => `
+                <tr>
+                    <td class="py-2.5 px-4 font-bold text-slate-800">#${att.attemptNum}</td>
+                    <td class="py-2.5 px-4 text-slate-500 text-xs">${att.timestamp}</td>
+                    <td class="py-2.5 px-4">${att.skills.addSame.pct}%</td>
+                    <td class="py-2.5 px-4">${att.skills.addDiff.pct}%</td>
+                    <td class="py-2.5 px-4">${att.skills.subPos.pct}%</td>
+                    <td class="py-2.5 px-4">${att.skills.subNeg.pct}%</td>
+                    <td class="py-2.5 px-4 font-bold ${att.percentage >= 80 ? 'text-emerald-600' : 'text-blue-600'}">${att.percentage}% (${att.score}/${att.total})</td>
+                </tr>
+            `).join('');
+        }
+
+        function promptClearHistory() {
+            document.getElementById('btn-clear-prompt').classList.add('hidden');
+            document.getElementById('clear-confirm-box').classList.remove('hidden');
+        }
+
+        function cancelClearHistory() {
+            document.getElementById('clear-confirm-box').classList.add('hidden');
+            document.getElementById('btn-clear-prompt').classList.remove('hidden');
+        }
+
+        function confirmClearHistory() {
+            attemptHistory = [];
+            localStorage.removeItem('int_attempt_history');
+            cancelClearHistory();
+            generateNewQuiz();
+            renderReport();
+        }
+    </script>
+</body>
+</html>
